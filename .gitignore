@@ -1,0 +1,33 @@
+# This .gitignore file itself is tracked
+
+# Ignore the output PDF
+Chinese_Workbook_A4.pdf
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Ignore virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Keep only these files/folders (everything else is ignored by default patterns above)
+# worksheets/
+# cover.png
+# script.py
