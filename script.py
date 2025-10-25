@@ -181,7 +181,7 @@ def combine_pdfs():
     # Worksheets
     for i, filename in enumerate(files, start=1):
         path = os.path.join(INPUT_DIR, filename)
-        print(f"  {i}. {filename}")
+        print(f"🧹 Cleaning + adding page {i}: {filename}...")
         page = resize_to_a4(path)
         overlay = make_page_number_overlay(i)
         page.merge_page(overlay)
