@@ -15,7 +15,6 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
-import os
 
 # --- Configuration ---
 INPUT_DIR = "./worksheets"
@@ -27,29 +26,12 @@ A4_WIDTH, A4_HEIGHT = A4
 # Register built-in Simplified Chinese font so the Chinese glyph renders
 pdfmetrics.registerFont(UnicodeCIDFont("STSong-Light"))
 
-# Try to register a bold CJK TTF (common Windows names). Fallback to STSong-Light if none found.
-def _choose_bold_cjk():
-    candidates = [
-        r"C:\Windows\Fonts\msyhbd.ttf",  # Microsoft YaHei Bold
-        r"C:\Windows\Fonts\SIMHEI.TTF",  # SimHei (bold-looking)
-        r"C:\Windows\Fonts\msyh.ttf",    # Microsoft YaHei (regular) — kept as last option
-    ]
-    for path in candidates:
-        if os.path.exists(path):
-            pdfmetrics.registerFont(TTFont("CJKBold", path))
-            return "CJKBold"
-    # fallback to built-in (light) if no TTF available
-    pdfmetrics.registerFont(UnicodeCIDFont("STSong-Light"))
-    return "STSong-Light"
-
-TITLE_FONT = _choose_bold_cjk()
-
 # Register HanyiSentyPagoda Regular for the single Chinese glyph (fallback to STSong-Light)
 def _choose_hanyi_font():
     candidates = [
+        os.path.join(os.path.dirname(__file__), "fonts", "HanyiSentyPagoda.ttf"),
         r"C:\Windows\Fonts\HanyiSentyPagoda.ttf",
         r"C:\Windows\Fonts\HanyiSentyPagoda_Regular.ttf",
-        os.path.join(os.path.dirname(__file__), "fonts", "HanyiSentyPagoda.ttf"),
     ]
     for path in candidates:
         if os.path.exists(path):
@@ -199,7 +181,7 @@ def combine_pdfs():
     # Worksheets
     for i, filename in enumerate(files, start=1):
         path = os.path.join(INPUT_DIR, filename)
-        print(f"🧹 Cleaning + adding page {i}: {filename}...")
+        print(f"  {i}. {filename}")
         page = resize_to_a4(path)
         overlay = make_page_number_overlay(i)
         page.merge_page(overlay)
@@ -208,7 +190,7 @@ def combine_pdfs():
     with open(OUTPUT_FILE, "wb") as f:
         writer.write(f)
 
-    print(f"\n✅ Workbook with centered cover saved as: {OUTPUT_FILE}")
+    print(f"\n✅ Saved: {OUTPUT_FILE} ({len(files) + 1} pages)")
 
 if __name__ == "__main__":
     combine_pdfs()
